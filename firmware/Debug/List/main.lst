@@ -1,0 +1,476 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V6.21.3.50641 for Atmel AVR        03/Apr/2021  17:27:56 #
+# Copyright 1996-2013 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  U:\work\Amiga\boot_selector\firmware\main.c              #
+#    Command line =  U:\work\Amiga\boot_selector\firmware\main.c              #
+#                    --cpu=tiny13a -mt -o U:\work\Amiga\boot_selector\firmwar #
+#                    e\Debug\Obj\ -lC U:\work\Amiga\boot_selector\firmware\De #
+#                    bug\List\ -lb U:\work\Amiga\boot_selector\firmware\Debug #
+#                    \List\ --initializers_in_flash --no_cse --no_inline      #
+#                    --no_code_motion --no_cross_call --no_clustering         #
+#                    --no_tbaa --debug -DENABLE_BIT_DEFINITIONS -e            #
+#                    --eeprom_size 64 -On                                     #
+#    List file    =  U:\work\Amiga\boot_selector\firmware\Debug\List\main.lst #
+#    Object file  =  U:\work\Amiga\boot_selector\firmware\Debug\Obj\main.r90  #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+U:\work\Amiga\boot_selector\firmware\main.c
+      1          
+      2          #include <iotiny13a.h>
+
+   \                                 In  segment ABSOLUTE, at 0x55
+   \   union <unnamed> volatile __io _A_MCUCR
+   \                     _A_MCUCR:
+   \   00000000                      DS8 1
+
+   \                                 In  segment ABSOLUTE, at 0x38
+   \   union <unnamed> volatile __io _A_PORTB
+   \                     _A_PORTB:
+   \   00000000                      DS8 1
+
+   \                                 In  segment ABSOLUTE, at 0x37
+   \   union <unnamed> volatile __io _A_DDRB
+   \                     _A_DDRB:
+   \   00000000                      DS8 1
+
+   \                                 In  segment ABSOLUTE, at 0x36
+   \   union <unnamed> volatile __io _A_PINB
+   \                     _A_PINB:
+   \   00000000                      DS8 1
+      3          
+      4          // Port bits definition. Option 1 (no external multiplexer)
+      5          // PB0 (CIA_SEL1n) -  Input
+      6          // PB1 (CIA_SEL0n) -  Input
+      7          // PB2 (HDR_SEL1n) -  Output
+      8          // PB3 (HDR_SEL0n) -  Output
+      9          // PB4 (LED)       -  Output
+     10          // PB5 (RESETn)    -  Input
+     11          
+     12          // PORTB bits
+     13          #define CIA_SEL1n       (1 << 0)
+     14          #define CIA_SEL0n       (1 << 1)
+     15          #define HDR_SEL1n       (1 << 2)
+     16          #define HDR_SEL0n       (1 << 4)
+     17          #define LED             (1 << 3)
+     18          #define RESETn          (1 << 5)
+     19          
+
+   \                                 In  segment TINY_Z, align 1, keep-with-next
+   \   00000000                      REQUIRE `?<Segment init: TINY_Z>`
+     20          unsigned char swap_enable = 0; // Swap disabled at power-up
+   \                     swap_enable:
+   \   00000000                      DS8 1
+
+   \                                 In  segment TINY_Z, align 1, keep-with-next
+   \   00000000                      REQUIRE `?<Segment init: TINY_Z>`
+     21          unsigned char swap_changed = 0; 
+   \                     swap_changed:
+   \   00000000                      DS8 1
+
+   \                                 In  segment TINY_Z, align 1, keep-with-next
+   \   00000000                      REQUIRE `?<Segment init: TINY_Z>`
+     22          unsigned int blink_cnt = 0;
+   \                     blink_cnt:
+   \   00000000                      DS8 2
+
+   \                                 In  segment TINY_Z, align 1, keep-with-next
+   \   00000000                      REQUIRE `?<Segment init: TINY_Z>`
+     23          unsigned char PORTB_BUFFER;
+   \                     PORTB_BUFFER:
+   \   00000000                      DS8 1
+
+   \                                 In  segment TINY_Z, align 1, keep-with-next
+   \   00000000                      REQUIRE `?<Segment init: TINY_Z>`
+     24          unsigned long reset_timeout_counter = 0;
+   \                     reset_timeout_counter:
+   \   00000000                      DS8 4
+
+   \                                 In  segment TINY_Z, align 1, keep-with-next
+   \   00000000                      REQUIRE `?<Segment init: TINY_Z>`
+     25          unsigned long reset_down_counter = 0;
+   \                     reset_down_counter:
+   \   00000000                      DS8 4
+
+   \                                 In  segment TINY_Z, align 1, keep-with-next
+   \   00000000                      REQUIRE `?<Segment init: TINY_Z>`
+     26          unsigned char reset_counter = 0;
+   \                     reset_counter:
+   \   00000000                      DS8 1
+     27          
+     28          
+     29          
+     30          
+
+   \                                 In  segment CODE, align 2, keep-with-next
+     31          int main(void)
+   \                     main:
+     32          {
+     33            // Enable pull-ups configuration
+     34            MCUCR &= ~(1<<PUD);
+   \   00000000   B705               IN      R16, 0x35
+   \   00000002   7B0F               ANDI    R16, 0xBF
+   \   00000004   BF05               OUT     0x35, R16
+     35            
+     36            // Port setup. Option 1 (no external multiplexer)
+     37            PORTB_BUFFER = CIA_SEL1n | CIA_SEL0n | HDR_SEL1n | HDR_SEL0n | RESETn;
+   \   00000006   E307               LDI     R16, 55
+   \   00000008   ....               LDI     R30, PORTB_BUFFER
+   \   0000000A   8300               ST      Z, R16
+     38            PORTB = PORTB_BUFFER;
+   \   0000000C   ....               LDI     R30, PORTB_BUFFER
+   \   0000000E   8100               LD      R16, Z
+   \   00000010   BB08               OUT     0x18, R16
+     39            DDRB =  HDR_SEL1n | HDR_SEL0n | LED;
+   \   00000012   E10C               LDI     R16, 28
+   \   00000014   BB07               OUT     0x17, R16
+     40            
+     41            
+     42            
+     43            
+     44            while(1)
+     45            {
+     46          	  /*
+     47          	  if(++blink_cnt >= 1000)
+     48          	  {
+     49          		  if(PORTB_BUFFER & LED) PORTB_BUFFER &= ~LED;
+     50          		   else PORTB_BUFFER |= LED;
+     51          		  blink_cnt = 0;
+     52          	  }
+     53          */
+     54          	// RESET monitoring
+     55          	if((PINB & RESETn) == 0)
+   \                     ??main_0:
+   \   00000016   99B5               SBIC    0x16, 0x05
+   \   00000018   C032               RJMP    ??main_1
+     56          	{
+     57          		//RESET is LOW
+     58          		if(reset_down_counter < 50000) reset_down_counter++;
+   \   0000001A   ....               LDI     R30, reset_down_counter
+   \   0000001C   8100               LD      R16, Z
+   \   0000001E   8111               LDD     R17, Z+1
+   \   00000020   8122               LDD     R18, Z+2
+   \   00000022   8133               LDD     R19, Z+3
+   \   00000024   3500               CPI     R16, 80
+   \   00000026   EC43               LDI     R20, 195
+   \   00000028   0714               CPC     R17, R20
+   \   0000002A   E040               LDI     R20, 0
+   \   0000002C   0724               CPC     R18, R20
+   \   0000002E   E040               LDI     R20, 0
+   \   00000030   0734               CPC     R19, R20
+   \   00000032   F470               BRCC    ??main_2
+   \   00000034   ....               LDI     R30, reset_down_counter
+   \   00000036   8100               LD      R16, Z
+   \   00000038   8111               LDD     R17, Z+1
+   \   0000003A   8122               LDD     R18, Z+2
+   \   0000003C   8133               LDD     R19, Z+3
+   \   0000003E   5F0F               SUBI    R16, 255
+   \   00000040   4F1F               SBCI    R17, 255
+   \   00000042   4F2F               SBCI    R18, 255
+   \   00000044   4F3F               SBCI    R19, 255
+   \   00000046   8300               ST      Z, R16
+   \   00000048   8311               STD     Z+1, R17
+   \   0000004A   8322               STD     Z+2, R18
+   \   0000004C   8333               STD     Z+3, R19
+   \   0000004E   C00D               RJMP    ??main_3
+     59          		else
+     60          		{
+     61          			  if(swap_changed == 0)
+   \                     ??main_2:
+   \   00000050   ....               LDI     R30, swap_changed
+   \   00000052   8100               LD      R16, Z
+   \   00000054   2300               TST     R16
+   \   00000056   F449               BRNE    ??main_3
+     62          			  {
+     63          				  swap_enable ^= 0xFF;
+   \   00000058   EF0F               LDI     R16, 255
+   \   0000005A   9110....           LDS     R17, swap_enable
+   \   0000005E   2710               EOR     R17, R16
+   \   00000060   9310....           STS     swap_enable, R17
+     64          				  swap_changed = 1;
+   \   00000064   E001               LDI     R16, 1
+   \   00000066   ....               LDI     R30, swap_changed
+   \   00000068   8300               ST      Z, R16
+     65          			  }
+     66          		  
+     67          		}
+     68          		reset_timeout_counter = 0;
+   \                     ??main_3:
+   \   0000006A   E000               LDI     R16, 0
+   \   0000006C   E010               LDI     R17, 0
+   \   0000006E   E020               LDI     R18, 0
+   \   00000070   E030               LDI     R19, 0
+   \   00000072   ....               LDI     R30, reset_timeout_counter
+   \   00000074   8300               ST      Z, R16
+   \   00000076   8311               STD     Z+1, R17
+   \   00000078   8322               STD     Z+2, R18
+   \   0000007A   8333               STD     Z+3, R19
+   \   0000007C   C038               RJMP    ??main_4
+     69          	}
+     70          	 else
+     71          	 {
+     72          		 // RESET is HIGH
+     73           		if(reset_down_counter >= 50000) // Long reset detected - swap drives 
+   \                     ??main_1:
+   \   0000007E   ....               LDI     R30, reset_down_counter
+   \   00000080   8100               LD      R16, Z
+   \   00000082   8111               LDD     R17, Z+1
+   \   00000084   8122               LDD     R18, Z+2
+   \   00000086   8133               LDD     R19, Z+3
+   \   00000088   3500               CPI     R16, 80
+   \   0000008A   EC43               LDI     R20, 195
+   \   0000008C   0714               CPC     R17, R20
+   \   0000008E   E040               LDI     R20, 0
+   \   00000090   0724               CPC     R18, R20
+   \   00000092   E040               LDI     R20, 0
+   \   00000094   0734               CPC     R19, R20
+   \   00000096   F4F8               BRCC    ??main_5
+     74          		 { 
+     75          //			 swap_enable ^= 0xFF;
+     76          		 }
+     77          		  else 
+     78          		   if(reset_down_counter > 1000) // Debouncing time 5ms
+   \   00000098   ....               LDI     R30, reset_down_counter
+   \   0000009A   8100               LD      R16, Z
+   \   0000009C   8111               LDD     R17, Z+1
+   \   0000009E   8122               LDD     R18, Z+2
+   \   000000A0   8133               LDD     R19, Z+3
+   \   000000A2   3E09               CPI     R16, 233
+   \   000000A4   E043               LDI     R20, 3
+   \   000000A6   0714               CPC     R17, R20
+   \   000000A8   E040               LDI     R20, 0
+   \   000000AA   0724               CPC     R18, R20
+   \   000000AC   E040               LDI     R20, 0
+   \   000000AE   0734               CPC     R19, R20
+   \   000000B0   F090               BRCS    ??main_5
+     79          		   {
+     80          			   reset_counter++;
+   \   000000B2   9100....           LDS     R16, reset_counter
+   \   000000B6   9503               INC     R16
+   \   000000B8   9300....           STS     reset_counter, R16
+     81          			   if(reset_counter == 3)
+   \   000000BC   ....               LDI     R30, reset_counter
+   \   000000BE   8100               LD      R16, Z
+   \   000000C0   3003               CPI     R16, 3
+   \   000000C2   F449               BRNE    ??main_5
+     82          			   {
+     83          				   reset_counter = 0;
+   \   000000C4   E000               LDI     R16, 0
+   \   000000C6   ....               LDI     R30, reset_counter
+   \   000000C8   8300               ST      Z, R16
+     84          				   swap_enable ^= 0xFF;
+   \   000000CA   EF0F               LDI     R16, 255
+   \   000000CC   9110....           LDS     R17, swap_enable
+   \   000000D0   2710               EOR     R17, R16
+   \   000000D2   9310....           STS     swap_enable, R17
+     85          			   }
+     86          		   }
+     87          
+     88          		 reset_down_counter = 0;
+   \                     ??main_5:
+   \   000000D6   E000               LDI     R16, 0
+   \   000000D8   E010               LDI     R17, 0
+   \   000000DA   E020               LDI     R18, 0
+   \   000000DC   E030               LDI     R19, 0
+   \   000000DE   ....               LDI     R30, reset_down_counter
+   \   000000E0   8300               ST      Z, R16
+   \   000000E2   8311               STD     Z+1, R17
+   \   000000E4   8322               STD     Z+2, R18
+   \   000000E6   8333               STD     Z+3, R19
+     89          		 swap_changed = 0;
+   \   000000E8   E000               LDI     R16, 0
+   \   000000EA   ....               LDI     R30, swap_changed
+   \   000000EC   8300               ST      Z, R16
+     90          	 }
+     91          	  
+     92          	if(reset_timeout_counter < 3000000) 
+   \                     ??main_4:
+   \   000000EE   ....               LDI     R30, reset_timeout_counter
+   \   000000F0   8100               LD      R16, Z
+   \   000000F2   8111               LDD     R17, Z+1
+   \   000000F4   8122               LDD     R18, Z+2
+   \   000000F6   8133               LDD     R19, Z+3
+   \   000000F8   3C00               CPI     R16, 192
+   \   000000FA   EC46               LDI     R20, 198
+   \   000000FC   0714               CPC     R17, R20
+   \   000000FE   E24D               LDI     R20, 45
+   \   00000100   0724               CPC     R18, R20
+   \   00000102   E040               LDI     R20, 0
+   \   00000104   0734               CPC     R19, R20
+   \   00000106   F470               BRCC    ??main_6
+     93          	{
+     94          		reset_timeout_counter++;
+   \   00000108   ....               LDI     R30, reset_timeout_counter
+   \   0000010A   8100               LD      R16, Z
+   \   0000010C   8111               LDD     R17, Z+1
+   \   0000010E   8122               LDD     R18, Z+2
+   \   00000110   8133               LDD     R19, Z+3
+   \   00000112   5F0F               SUBI    R16, 255
+   \   00000114   4F1F               SBCI    R17, 255
+   \   00000116   4F2F               SBCI    R18, 255
+   \   00000118   4F3F               SBCI    R19, 255
+   \   0000011A   8300               ST      Z, R16
+   \   0000011C   8311               STD     Z+1, R17
+   \   0000011E   8322               STD     Z+2, R18
+   \   00000120   8333               STD     Z+3, R19
+   \   00000122   C00C               RJMP    ??main_7
+     95          	}
+     96          	 else
+     97          	 {
+     98           		reset_counter = 0;
+   \                     ??main_6:
+   \   00000124   E000               LDI     R16, 0
+   \   00000126   ....               LDI     R30, reset_counter
+   \   00000128   8300               ST      Z, R16
+     99           		reset_down_counter = 0;
+   \   0000012A   E000               LDI     R16, 0
+   \   0000012C   E010               LDI     R17, 0
+   \   0000012E   E020               LDI     R18, 0
+   \   00000130   E030               LDI     R19, 0
+   \   00000132   ....               LDI     R30, reset_down_counter
+   \   00000134   8300               ST      Z, R16
+   \   00000136   8311               STD     Z+1, R17
+   \   00000138   8322               STD     Z+2, R18
+   \   0000013A   8333               STD     Z+3, R19
+    100          	 }
+    101          	  
+    102          	  if(swap_enable)
+   \                     ??main_7:
+   \   0000013C   ....               LDI     R30, swap_enable
+   \   0000013E   8100               LD      R16, Z
+   \   00000140   2300               TST     R16
+   \   00000142   F0D9               BREQ    ??main_8
+    103          	  {
+    104          		  PORTB_BUFFER |= LED;
+   \   00000144   ....               LDI     R30, PORTB_BUFFER
+   \   00000146   8100               LD      R16, Z
+   \   00000148   6008               ORI     R16, 0x08
+   \   0000014A   8300               ST      Z, R16
+    105          		  // SEL0
+    106          		  if((PINB & CIA_SEL0n) == CIA_SEL0n) PORTB_BUFFER |= HDR_SEL1n;
+   \   0000014C   9BB1               SBIS    0x16, 0x01
+   \   0000014E   C005               RJMP    ??main_9
+   \   00000150   ....               LDI     R30, PORTB_BUFFER
+   \   00000152   8100               LD      R16, Z
+   \   00000154   6004               ORI     R16, 0x04
+   \   00000156   8300               ST      Z, R16
+   \   00000158   C004               RJMP    ??main_10
+    107          		  else PORTB_BUFFER &= ~HDR_SEL1n;
+   \                     ??main_9:
+   \   0000015A   ....               LDI     R30, PORTB_BUFFER
+   \   0000015C   8100               LD      R16, Z
+   \   0000015E   7F0B               ANDI    R16, 0xFB
+   \   00000160   8300               ST      Z, R16
+    108          		  // SEL1
+    109          		  if((PINB & CIA_SEL1n) == CIA_SEL1n) PORTB_BUFFER |= HDR_SEL0n;
+   \                     ??main_10:
+   \   00000162   9BB0               SBIS    0x16, 0x00
+   \   00000164   C005               RJMP    ??main_11
+   \   00000166   ....               LDI     R30, PORTB_BUFFER
+   \   00000168   8100               LD      R16, Z
+   \   0000016A   6100               ORI     R16, 0x10
+   \   0000016C   8300               ST      Z, R16
+   \   0000016E   C01F               RJMP    ??main_12
+    110          		  else PORTB_BUFFER &= ~HDR_SEL0n;
+   \                     ??main_11:
+   \   00000170   ....               LDI     R30, PORTB_BUFFER
+   \   00000172   8100               LD      R16, Z
+   \   00000174   7E0F               ANDI    R16, 0xEF
+   \   00000176   8300               ST      Z, R16
+   \   00000178   C01A               RJMP    ??main_12
+    111          	  }
+    112          	  else
+    113          	  {
+    114          		   PORTB_BUFFER &= ~LED;
+   \                     ??main_8:
+   \   0000017A   ....               LDI     R30, PORTB_BUFFER
+   \   0000017C   8100               LD      R16, Z
+   \   0000017E   7F07               ANDI    R16, 0xF7
+   \   00000180   8300               ST      Z, R16
+    115          		  // SEL0
+    116          		  if((PINB & CIA_SEL0n) == CIA_SEL0n) PORTB_BUFFER |= HDR_SEL0n;
+   \   00000182   9BB1               SBIS    0x16, 0x01
+   \   00000184   C005               RJMP    ??main_13
+   \   00000186   ....               LDI     R30, PORTB_BUFFER
+   \   00000188   8100               LD      R16, Z
+   \   0000018A   6100               ORI     R16, 0x10
+   \   0000018C   8300               ST      Z, R16
+   \   0000018E   C004               RJMP    ??main_14
+    117          		  else PORTB_BUFFER &= ~HDR_SEL0n;
+   \                     ??main_13:
+   \   00000190   ....               LDI     R30, PORTB_BUFFER
+   \   00000192   8100               LD      R16, Z
+   \   00000194   7E0F               ANDI    R16, 0xEF
+   \   00000196   8300               ST      Z, R16
+    118          		  // SEL1
+    119          		  if((PINB & CIA_SEL1n) == CIA_SEL1n) PORTB_BUFFER |= HDR_SEL1n;
+   \                     ??main_14:
+   \   00000198   9BB0               SBIS    0x16, 0x00
+   \   0000019A   C005               RJMP    ??main_15
+   \   0000019C   ....               LDI     R30, PORTB_BUFFER
+   \   0000019E   8100               LD      R16, Z
+   \   000001A0   6004               ORI     R16, 0x04
+   \   000001A2   8300               ST      Z, R16
+   \   000001A4   C004               RJMP    ??main_12
+    120          		  else PORTB_BUFFER &= ~HDR_SEL1n;
+   \                     ??main_15:
+   \   000001A6   ....               LDI     R30, PORTB_BUFFER
+   \   000001A8   8100               LD      R16, Z
+   \   000001AA   7F0B               ANDI    R16, 0xFB
+   \   000001AC   8300               ST      Z, R16
+    121          
+    122          	  }
+    123          	  
+    124          	  // Write output bits at once
+    125          	  PORTB = PORTB_BUFFER;
+   \                     ??main_12:
+   \   000001AE   ....               LDI     R30, PORTB_BUFFER
+   \   000001B0   8100               LD      R16, Z
+   \   000001B2   BB08               OUT     0x18, R16
+   \   000001B4   CF30               RJMP    ??main_0
+   \   000001B6                      REQUIRE _A_MCUCR
+   \   000001B6                      REQUIRE _A_PORTB
+   \   000001B6                      REQUIRE _A_DDRB
+   \   000001B6                      REQUIRE _A_PINB
+    126            }
+    127          }
+
+   Maximum stack usage in bytes:
+
+   RSTACK Function
+   ------ --------
+      2   main
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       1  PORTB_BUFFER
+       1  _A_DDRB
+       1  _A_MCUCR
+       1  _A_PINB
+       1  _A_PORTB
+       2  blink_cnt
+     438  main
+       1  reset_counter
+       4  reset_down_counter
+       4  reset_timeout_counter
+       1  swap_changed
+       1  swap_enable
+       4  -- Other
+
+ 
+   4 bytes in segment ABSOLUTE
+ 438 bytes in segment CODE
+   4 bytes in segment INITTAB
+  14 bytes in segment TINY_Z
+ 
+ 438 bytes of CODE memory (+ 4 bytes shared)
+  14 bytes of DATA memory (+ 4 bytes shared)
+
+Errors: none
+Warnings: none

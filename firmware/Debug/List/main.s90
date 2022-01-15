@@ -1,0 +1,364 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR C/C++ Compiler V6.21.3.50641 for Atmel AVR       03/Apr/2021  17:27:56 /
+// Copyright 1996-2013 IAR Systems AB.                                        /
+//                                                                            /
+//    Source file  =  U:\work\Amiga\boot_selector\firmware\main.c             /
+//    Command line =  U:\work\Amiga\boot_selector\firmware\main.c             /
+//                    --cpu=tiny13a -mt -o U:\work\Amiga\boot_selector\firmwa /
+//                    re\Debug\Obj\ -lC U:\work\Amiga\boot_selector\firmware\ /
+//                    Debug\List\ -lb U:\work\Amiga\boot_selector\firmware\De /
+//                    bug\List\ --initializers_in_flash --no_cse --no_inline  /
+//                    --no_code_motion --no_cross_call --no_clustering        /
+//                    --no_tbaa --debug -DENABLE_BIT_DEFINITIONS -e           /
+//                    --eeprom_size 64 -On                                    /
+//    List file    =  U:\work\Amiga\boot_selector\firmware\Debug\List\main.s9 /
+//                    0                                                       /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME main
+
+        RSEG CSTACK:DATA:NOROOT(0)
+        RSEG RSTACK:DATA:NOROOT(0)
+
+        EXTERN ?need_segment_init
+
+        PUBWEAK `?<Segment init: TINY_Z>`
+        PUBLIC PORTB_BUFFER
+        PUBWEAK _A_DDRB
+        PUBWEAK _A_MCUCR
+        PUBWEAK _A_PINB
+        PUBWEAK _A_PORTB
+        PUBWEAK __?EEARL
+        PUBWEAK __?EECR
+        PUBWEAK __?EEDR
+        PUBLIC blink_cnt
+        PUBLIC main
+        PUBLIC reset_counter
+        PUBLIC reset_down_counter
+        PUBLIC reset_timeout_counter
+        PUBLIC swap_changed
+        PUBLIC swap_enable
+
+
+        ASEGN ABSOLUTE:DATA:NOROOT,055H
+// union <unnamed> volatile __io _A_MCUCR
+_A_MCUCR:
+        DS8 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,038H
+// union <unnamed> volatile __io _A_PORTB
+_A_PORTB:
+        DS8 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,037H
+// union <unnamed> volatile __io _A_DDRB
+_A_DDRB:
+        DS8 1
+
+        ASEGN ABSOLUTE:DATA:NOROOT,036H
+// union <unnamed> volatile __io _A_PINB
+_A_PINB:
+        DS8 1
+
+        RSEG TINY_Z:DATA:NOROOT(0)
+        REQUIRE `?<Segment init: TINY_Z>`
+swap_enable:
+        DS8 1
+
+        RSEG TINY_Z:DATA:NOROOT(0)
+        REQUIRE `?<Segment init: TINY_Z>`
+swap_changed:
+        DS8 1
+
+        RSEG TINY_Z:DATA:NOROOT(0)
+        REQUIRE `?<Segment init: TINY_Z>`
+blink_cnt:
+        DS8 2
+
+        RSEG TINY_Z:DATA:NOROOT(0)
+        REQUIRE `?<Segment init: TINY_Z>`
+PORTB_BUFFER:
+        DS8 1
+
+        RSEG TINY_Z:DATA:NOROOT(0)
+        REQUIRE `?<Segment init: TINY_Z>`
+reset_timeout_counter:
+        DS8 4
+
+        RSEG TINY_Z:DATA:NOROOT(0)
+        REQUIRE `?<Segment init: TINY_Z>`
+reset_down_counter:
+        DS8 4
+
+        RSEG TINY_Z:DATA:NOROOT(0)
+        REQUIRE `?<Segment init: TINY_Z>`
+reset_counter:
+        DS8 1
+
+        RSEG CODE:CODE:NOROOT(1)
+main:
+        IN      R16, 0x35
+        ANDI    R16, 0xBF
+        OUT     0x35, R16
+        LDI     R16, 55
+        LDI     R30, PORTB_BUFFER
+        ST      Z, R16
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        OUT     0x18, R16
+        LDI     R16, 28
+        OUT     0x17, R16
+??main_0:
+        SBIC    0x16, 0x05
+        RJMP    ??main_1
+        LDI     R30, reset_down_counter
+        LD      R16, Z
+        LDD     R17, Z+1
+        LDD     R18, Z+2
+        LDD     R19, Z+3
+        CPI     R16, 80
+        LDI     R20, 195
+        CPC     R17, R20
+        LDI     R20, 0
+        CPC     R18, R20
+        LDI     R20, 0
+        CPC     R19, R20
+        BRCC    ??main_2
+        LDI     R30, reset_down_counter
+        LD      R16, Z
+        LDD     R17, Z+1
+        LDD     R18, Z+2
+        LDD     R19, Z+3
+        SUBI    R16, 255
+        SBCI    R17, 255
+        SBCI    R18, 255
+        SBCI    R19, 255
+        ST      Z, R16
+        STD     Z+1, R17
+        STD     Z+2, R18
+        STD     Z+3, R19
+        RJMP    ??main_3
+??main_2:
+        LDI     R30, swap_changed
+        LD      R16, Z
+        TST     R16
+        BRNE    ??main_3
+        LDI     R16, 255
+        LDS     R17, swap_enable
+        EOR     R17, R16
+        STS     swap_enable, R17
+        LDI     R16, 1
+        LDI     R30, swap_changed
+        ST      Z, R16
+??main_3:
+        LDI     R16, 0
+        LDI     R17, 0
+        LDI     R18, 0
+        LDI     R19, 0
+        LDI     R30, reset_timeout_counter
+        ST      Z, R16
+        STD     Z+1, R17
+        STD     Z+2, R18
+        STD     Z+3, R19
+        RJMP    ??main_4
+??main_1:
+        LDI     R30, reset_down_counter
+        LD      R16, Z
+        LDD     R17, Z+1
+        LDD     R18, Z+2
+        LDD     R19, Z+3
+        CPI     R16, 80
+        LDI     R20, 195
+        CPC     R17, R20
+        LDI     R20, 0
+        CPC     R18, R20
+        LDI     R20, 0
+        CPC     R19, R20
+        BRCC    ??main_5
+        LDI     R30, reset_down_counter
+        LD      R16, Z
+        LDD     R17, Z+1
+        LDD     R18, Z+2
+        LDD     R19, Z+3
+        CPI     R16, 233
+        LDI     R20, 3
+        CPC     R17, R20
+        LDI     R20, 0
+        CPC     R18, R20
+        LDI     R20, 0
+        CPC     R19, R20
+        BRCS    ??main_5
+        LDS     R16, reset_counter
+        INC     R16
+        STS     reset_counter, R16
+        LDI     R30, reset_counter
+        LD      R16, Z
+        CPI     R16, 3
+        BRNE    ??main_5
+        LDI     R16, 0
+        LDI     R30, reset_counter
+        ST      Z, R16
+        LDI     R16, 255
+        LDS     R17, swap_enable
+        EOR     R17, R16
+        STS     swap_enable, R17
+??main_5:
+        LDI     R16, 0
+        LDI     R17, 0
+        LDI     R18, 0
+        LDI     R19, 0
+        LDI     R30, reset_down_counter
+        ST      Z, R16
+        STD     Z+1, R17
+        STD     Z+2, R18
+        STD     Z+3, R19
+        LDI     R16, 0
+        LDI     R30, swap_changed
+        ST      Z, R16
+??main_4:
+        LDI     R30, reset_timeout_counter
+        LD      R16, Z
+        LDD     R17, Z+1
+        LDD     R18, Z+2
+        LDD     R19, Z+3
+        CPI     R16, 192
+        LDI     R20, 198
+        CPC     R17, R20
+        LDI     R20, 45
+        CPC     R18, R20
+        LDI     R20, 0
+        CPC     R19, R20
+        BRCC    ??main_6
+        LDI     R30, reset_timeout_counter
+        LD      R16, Z
+        LDD     R17, Z+1
+        LDD     R18, Z+2
+        LDD     R19, Z+3
+        SUBI    R16, 255
+        SBCI    R17, 255
+        SBCI    R18, 255
+        SBCI    R19, 255
+        ST      Z, R16
+        STD     Z+1, R17
+        STD     Z+2, R18
+        STD     Z+3, R19
+        RJMP    ??main_7
+??main_6:
+        LDI     R16, 0
+        LDI     R30, reset_counter
+        ST      Z, R16
+        LDI     R16, 0
+        LDI     R17, 0
+        LDI     R18, 0
+        LDI     R19, 0
+        LDI     R30, reset_down_counter
+        ST      Z, R16
+        STD     Z+1, R17
+        STD     Z+2, R18
+        STD     Z+3, R19
+??main_7:
+        LDI     R30, swap_enable
+        LD      R16, Z
+        TST     R16
+        BREQ    ??main_8
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ORI     R16, 0x08
+        ST      Z, R16
+        SBIS    0x16, 0x01
+        RJMP    ??main_9
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ORI     R16, 0x04
+        ST      Z, R16
+        RJMP    ??main_10
+??main_9:
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ANDI    R16, 0xFB
+        ST      Z, R16
+??main_10:
+        SBIS    0x16, 0x00
+        RJMP    ??main_11
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ORI     R16, 0x10
+        ST      Z, R16
+        RJMP    ??main_12
+??main_11:
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ANDI    R16, 0xEF
+        ST      Z, R16
+        RJMP    ??main_12
+??main_8:
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ANDI    R16, 0xF7
+        ST      Z, R16
+        SBIS    0x16, 0x01
+        RJMP    ??main_13
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ORI     R16, 0x10
+        ST      Z, R16
+        RJMP    ??main_14
+??main_13:
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ANDI    R16, 0xEF
+        ST      Z, R16
+??main_14:
+        SBIS    0x16, 0x00
+        RJMP    ??main_15
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ORI     R16, 0x04
+        ST      Z, R16
+        RJMP    ??main_12
+??main_15:
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        ANDI    R16, 0xFB
+        ST      Z, R16
+??main_12:
+        LDI     R30, PORTB_BUFFER
+        LD      R16, Z
+        OUT     0x18, R16
+        RJMP    ??main_0
+        REQUIRE _A_MCUCR
+        REQUIRE _A_PORTB
+        REQUIRE _A_DDRB
+        REQUIRE _A_PINB
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01cH
+__?EECR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01dH
+__?EEDR:
+
+        ASEGN ABSOLUTE:DATA:NOROOT,01eH
+__?EEARL:
+
+        RSEG INITTAB:CODE:NOROOT(0)
+`?<Segment init: TINY_Z>`:
+        DC8     SFE(TINY_Z) - SFB(TINY_Z)
+        DC8     SFB(TINY_Z)
+        DC16    0
+        REQUIRE ?need_segment_init
+
+        END
+// 
+//   4 bytes in segment ABSOLUTE
+// 438 bytes in segment CODE
+//   4 bytes in segment INITTAB
+//  14 bytes in segment TINY_Z
+// 
+// 438 bytes of CODE memory (+ 4 bytes shared)
+//  14 bytes of DATA memory (+ 4 bytes shared)
+//
+//Errors: none
+//Warnings: none
