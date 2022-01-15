@@ -12,5 +12,6 @@ Can be configured to be controlled by a switch (default) or by triple RESET (Ctr
 ![изображение](https://user-images.githubusercontent.com/81614352/149620833-eb390062-2c70-410a-bab9-8c919594a513.png)
 
 # MPU firmware
-Done using IAR AVR IDE. Sources included in "Firmware" folder.
+I used IAR AVR IDE but it is quite simple and can be easyly ported to another toolchain. 
+Sources included in "Firmware" folder.
 
