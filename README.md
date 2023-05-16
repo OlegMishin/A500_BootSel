@@ -2,10 +2,15 @@
 Simple A500 Floppy boot selector (DF0-DF1 swap).
 Can be configured to be controlled by a switch (default) or by triple RESET (Ctrl-Amiga-Amiga). This managed by an ATtiny MPU.
 
+PCB_v2 has minor changes. Mostly silkscreen fixes.
 
 # Default schematic (Switch control)
 
-![изображение](https://user-images.githubusercontent.com/81614352/149620829-915dcd8d-ae16-423c-9a46-15e8e0cebd5f.png)
+!![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/2a4a09f9-5265-4c79-95c2-95dc9ffd01f1)
+
+# Default schematic (Software control with long RESET)
+
+![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/812ea13d-0646-47b1-908a-81724bf6ed9c)
 
 
 # Pcb 3D render
