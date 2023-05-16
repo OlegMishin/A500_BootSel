@@ -8,7 +8,7 @@ PCB_v2 has minor changes. Mostly silkscreen fixes.
 
 !![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/2a4a09f9-5265-4c79-95c2-95dc9ffd01f1)
 
-# Default schematic (Software control with long RESET)
+# Optional schematic (Software control with long RESET)
 
 ![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/812ea13d-0646-47b1-908a-81724bf6ed9c)
 
