@@ -18,6 +18,8 @@ Main features:
 
 ![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/33181fbf-cae7-44a3-bc28-dbcc9168d84f)
 
+![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/c824fa29-4beb-4a27-900e-5a95ed1a03fa)
+
 
 # MPU firmware
 Is in "Firmware" folder. There is a programming CMD file "serialupdi.cmd" to flash the firmware with AVRDUDE.
