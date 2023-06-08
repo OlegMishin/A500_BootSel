@@ -20,6 +20,6 @@ Main features:
 
 
 # MPU firmware
-I used IAR AVR IDE but it is quite simple and can be easyly ported to another toolchain. 
-Sources included in "Firmware" folder.
+Is in "Firmware" folder. There is a programming CMD file "serialupdi.cmd" to flash the firmware with AVRDUDE.
+MCU fuses left by default.
 
