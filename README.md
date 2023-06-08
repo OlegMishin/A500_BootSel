@@ -1,6 +1,7 @@
 # A500_BootSel
 Simple A500 Floppy boot selector (DF0-DF1 swap).
 Revision 3.0 (old ones moved to "Archive").
+
 Main features:
 - Can be controlled either by a switch or by RESET (3 times or long press of Ctrl-Amiga-Amiga keys). 
 - The switch overrides RESET selection. 
@@ -29,4 +30,6 @@ Programming tool: EXA_PROG: https://www.diamex.de/dxshop/EXA-PROG-AVR-ISP-und-UP
 
 Also a simple FT232RL based UPDI programmer can be used. More information can be found here:
 https://github.com/SpenceKonde/AVR-Guidance/blob/master/UPDI/jtag2updi.md
+or here
+https://teddywarner.org/Projects/SerialUPDI/
 
