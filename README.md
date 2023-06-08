@@ -1,21 +1,20 @@
 # A500_BootSel
 Simple A500 Floppy boot selector (DF0-DF1 swap).
-Can be configured to be controlled by a switch (default) or by holding long RESET (Ctrl-Amiga-Amiga). This managed by an ATtiny MPU.
+Revision 3.0 (old ones moved to "Archive").
+Main features:
+- Can be controlled either by a switch or by RESET (3 times or long press of Ctrl-Amiga-Amiga keys). 
+- The switch overrides RESET selection. 
+- Bicolor LED can indicate SWAP or NORMAL with different colors. 
+- Sound indication of selected configuration  (NORMAL - beep, SWAP - two beeps)
 
-PCB_v2 has minor changes. Mostly silkscreen fixes.
+# Circuit diagram
 
-# Default schematic (Switch control)
-
-!![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/2a4a09f9-5265-4c79-95c2-95dc9ffd01f1)
-
-# Optional schematic (Software control with long RESET)
-
-![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/812ea13d-0646-47b1-908a-81724bf6ed9c)
+![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/8c894bfb-adad-4ad5-adfa-43d8f1c22b5a)
 
 
 # Pcb 3D render
-Gerbers are in "pcb_v1" folder.
-![изображение](https://user-images.githubusercontent.com/81614352/149620833-eb390062-2c70-410a-bab9-8c919594a513.png)
+
+![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/5fff9c96-fcfd-4002-8ff2-18b6dfeb5f9b)
 
 # MPU firmware
 I used IAR AVR IDE but it is quite simple and can be easyly ported to another toolchain. 
