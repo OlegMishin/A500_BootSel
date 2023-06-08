@@ -12,11 +12,19 @@ Main features:
 ![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/8c894bfb-adad-4ad5-adfa-43d8f1c22b5a)
 
 
-# Pcb 3D render
+# Pcb 3D render and actual sample
 
 ![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/5fff9c96-fcfd-4002-8ff2-18b6dfeb5f9b)
 
+![image](https://github.com/OlegMishin/A500_BootSel/assets/81614352/33181fbf-cae7-44a3-bc28-dbcc9168d84f)
+
+
 # MPU firmware
-I used IAR AVR IDE but it is quite simple and can be easyly ported to another toolchain. 
-Sources included in "Firmware" folder.
+Is in "Firmware" folder. There is a programming CMD file "serialupdi.cmd" to flash the firmware with AVRDUDE.
+MCU fuses left by default.
+
+Programming tool: EXA_PROG: https://www.diamex.de/dxshop/EXA-PROG-AVR-ISP-und-UPDI-STM32-NXP-ESP
+
+Also a simple FT232RL based UPDI programmer can be used. More information can be found here:
+https://github.com/SpenceKonde/AVR-Guidance/blob/master/UPDI/jtag2updi.md
 
